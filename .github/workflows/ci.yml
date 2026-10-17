@@ -23,3 +23,6 @@ jobs:
 
       - name: Run tests
         run:  npm run test -- --coverage
+
+      - name: Check Formatting
+        run: npm run format:check
