@@ -39,4 +39,4 @@ jobs:
         run: npm ci
 
       - name: Check Formatting
-        run: npm run format -- --check
+        run: npm run format:check
