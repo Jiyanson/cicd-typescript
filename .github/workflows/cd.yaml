@@ -15,17 +15,12 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: aws-actions/configure-aws-credentials@v4
+      - uses : actions/login@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-1
-
-      - id: ecr
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Build and push
-        run: |
-          IMAGE="${{ steps.ecr.outputs.registry }}/notely-ecr-repo:${{ github.sha }}"
-          docker build -t "$IMAGE" .
-          docker push "$IMAGE"
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+          IMAGE=ghcr.io/${{ github.repository }}:${{ github.sha }}
+          docker build -t $IMAGE .
+          docker push $IMAGE
