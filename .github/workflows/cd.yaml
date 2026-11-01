@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: read
+  packages: write
 
 jobs:
   deploy:
@@ -15,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses : actions/login@v2
+      - uses : docker/login@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
