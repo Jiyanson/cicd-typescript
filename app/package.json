@@ -4,8 +4,8 @@
   "main": "dist/main.js",
   "type": "module",
   "scripts": {
-    "format:write": "prettier --write \"src/**/*.{js,ts,json,css,md}\"",
-    "format:check": "prettier --check \"src/**/*.{js,ts,json,css,md}\"",
+    "format:write": "prettier --write \"{src,tests,public}/**/*.{js,ts,json,css,md,html}\"",
+    "format:check": "prettier --check \"{src,tests,public}/**/*.{js,ts,json,css,md,html}\"",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
@@ -13,7 +13,7 @@
     "start": "node dist/main.js",
     "dev": "npx tsc && node dist/main.js",
     "test": "vitest --run",
-    "lint": "eslint src"
+    "lint": "eslint src tests"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

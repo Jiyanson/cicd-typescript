@@ -4,10 +4,16 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   tests:
     name: Tests
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
 
     steps:
       - name: Check out code
@@ -17,15 +23,22 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
 
       - name: Install dependencies
         run: npm ci
 
       - name: Run tests
-        run:  npm run test -- --coverage
+        run: npm run test -- --coverage
+
   style:
     name: Style
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+
     steps:
       - name: Check out code
         uses: actions/checkout@v6
@@ -34,6 +47,8 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -43,3 +58,7 @@ jobs:
 
       - name: Check linting
         run: npm run lint -- --max-warnings=0
+
+  image:
+    needs: [tests, style]
+    uses: ./.github/workflows/build-scan.yml

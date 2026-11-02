@@ -3,3 +3,13 @@ coverage/
 dist/
 .env
 .vscode
+
+# Terraform local state and generated plans
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+
+# Ansible retry files
+*.retry
