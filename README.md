@@ -1,26 +1,80 @@
-# learn-cicd-typescript-starter (Notely)
+# Notely
 
 [![CI](https://github.com/Jiyanson/cicd-typescript/actions/workflows/ci.yml/badge.svg)](https://github.com/Jiyanson/cicd-typescript/actions/workflows/ci.yml)
 
-This repo contains the typescript starter code for the "Notely" application for the "Learn CICD" course on [Boot.dev](https://boot.dev).
+This repository contains the Notely TypeScript application and the automation
+used to test, package, and publish it.
+
+## Project structure
+
+```text
+.
+├── app/                    # TypeScript application and Node configuration
+│   ├── public/             # Static browser assets
+│   ├── src/                # API and database implementation
+│   ├── tests/              # Tests excluded from production compilation
+│   ├── package.json
+│   └── tsconfig.json
+├── devops/
+│   ├── ansible/            # Provisioning and bootstrap automation
+│   ├── docker/             # Container build definition
+│   ├── helm/               # Kubernetes application packaging
+│   ├── scripts/            # Local automation helpers
+│   ├── terraform/          # Infrastructure as code
+│   └── README.md           # Build and delivery documentation
+└── .github/workflows/      # GitHub Actions CI/CD workflows
+```
+
+GitHub requires workflow files to remain in `.github/workflows`, so they stay
+at the repository root even though they are part of the DevOps setup.
+
+See [`app/README.md`](app/README.md) for application details and
+[`devops/README.md`](devops/README.md) for build and delivery details.
 
 ## Local Development
 
-Make sure you're on Node version 22+.
-
-Create a `.env` file in the root of the project with the following contents:
+Make sure you have Node.js 22 or newer, then work from the application
+directory:
 
 ```bash
-PORT="8080"
+cd app
+npm install
+```
+
+Create `app/.env` from the provided template:
+
+```bash
+cp .env.example .env
 ```
 
 Run the server:
 
 ```bash
-npm install
 npm run dev
 ```
 
-_This starts the server in non-database mode._ It will serve a simple webpage at `http://localhost:8080`.
+This starts the server in non-database mode and serves the application at
+`http://localhost:8080`.
 
-You do _not_ need to set up a database or any interactivity on the webpage yet. Instructions for that will come later in the course!
+## Quality checks
+
+Run these commands from `app/`:
+
+```bash
+npm test
+npm run build
+npm run lint -- --max-warnings=0
+npm run format:check
+```
+
+## Container image
+
+Build the image from the repository root so Docker can use `app/` as its build
+context:
+
+```bash
+docker build --file devops/docker/Dockerfile --tag notely:latest app
+```
+
+The same command can be used by a future delivery workflow to publish images to
+GitHub Container Registry.
