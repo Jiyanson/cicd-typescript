@@ -1,0 +1,41 @@
+---
+- name: Require the agent and server connection values
+  ansible.builtin.assert:
+    that:
+      - k3s_private_ip is defined
+      - k3s_private_ip | length > 0
+      - groups['k3s_server'] | length == 1
+      - hostvars[groups['k3s_server'][0]].k3s_private_ip is defined
+      - hostvars[groups['k3s_server'][0]].k3s_node_token is defined
+    fail_msg: >-
+      The agent requires its k3s_private_ip and a successfully configured
+      K3s server.
+  no_log: true
+
+- name: Download the K3s installer
+  ansible.builtin.get_url:
+    url: https://get.k3s.io
+    dest: /usr/local/src/k3s-install.sh
+    mode: "0755"
+
+- name: Install and join the K3s agent
+  ansible.builtin.command:
+    cmd: /usr/local/src/k3s-install.sh
+    creates: /etc/systemd/system/k3s-agent.service
+  environment:
+    INSTALL_K3S_CHANNEL: "{{ k3s_channel }}"
+    INSTALL_K3S_EXEC: >-
+      agent
+      --node-name {{ inventory_hostname }}
+      --node-ip {{ k3s_private_ip }}
+    K3S_URL: >-
+      https://{{ hostvars[groups['k3s_server'][0]].k3s_private_ip }}:6443
+    K3S_TOKEN: >-
+      {{ hostvars[groups['k3s_server'][0]].k3s_node_token }}
+  no_log: true
+
+- name: Enable and start the K3s agent
+  ansible.builtin.systemd:
+    name: k3s-agent
+    enabled: true
+    state: started

@@ -9,7 +9,23 @@ dist/
 *.tfstate
 *.tfstate.*
 *.tfplan
+*.tfvars
+!*.tfvars.example
+*.tfvars.json
+!*.tfvars.json.example
 crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
 
-# Ansible retry files
+# Ansible local inventory, credentials, and retry files
 *.retry
+devops/ansible/inventory.ini
+devops/ansible/inventory/*.ini
+!devops/ansible/inventory/*.ini.example
+devops/ansible/**/.vault_pass*
+devops/ansible/**/vault-password*
+devops/ansible/**/*.key
+devops/ansible/**/*.pem

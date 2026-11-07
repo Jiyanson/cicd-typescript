@@ -1,0 +1,14 @@
+[k3s_server]
+k3s-server ansible_host=SERVER_PUBLIC_IP k3s_private_ip=SERVER_PRIVATE_IP
+
+[k3s_agents]
+k3s-agent ansible_host=AGENT_PUBLIC_IP k3s_private_ip=AGENT_PRIVATE_IP
+
+[k3s:children]
+k3s_server
+k3s_agents
+
+[k3s:vars]
+ansible_user=ubuntu
+ansible_ssh_private_key_file=~/.ssh/id_ed25519
+ansible_python_interpreter=/usr/bin/python3
